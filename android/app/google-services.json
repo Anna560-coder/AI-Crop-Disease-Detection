@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "750987168603",
+    "project_id": "ai-crop-disease-detectio-cde56",
+    "storage_bucket": "ai-crop-disease-detectio-cde56.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:750987168603:android:e0398d8e45e251a6bb287e",
+        "android_client_info": {
+          "package_name": "com.example.ai_crop_disease_detection"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCD1Zdc4ppesTTrqkVeSUMs2WO1b85Z01Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
