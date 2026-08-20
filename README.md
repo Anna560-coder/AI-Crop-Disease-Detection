@@ -1,6 +1,4 @@
-# AI-Driven Mobile Crop Disease Detection System
-
-**for Small-Scale Farmers in Nketoana Local Municipality**
+# Development of an AI-Driven Mobile Crop Disease Detection System for Small-Scale Farmers in Nketoana Local Municipality. 
 
 IPJ527C: Advanced Research Project B — Assignment 1 (Alpha Version Demonstration)
 
@@ -35,7 +33,7 @@ This is the **Alpha version**: it demonstrates the core, prioritised end-to-end 
 - Detection history, scoped to the logged-in farmer, with delete functionality
 - Farmer requirements survey conducted to inform the design (Google Forms, submitted under IPJ517C)
 
-> See the Requirements & Feature Checklist in the Alpha Version Documentation Trio for the full traceability of each item back to the approved IPJ517C objectives.
+> See the Requirements & Feature Checklist in the Alpha Version Documentation Submitted for the full traceability of each item back to the approved IPJ517C objectives.
 
 ## How to Run / Access the System
 
@@ -54,8 +52,6 @@ This is the **Alpha version**: it demonstrates the core, prioritised end-to-end 
    flutter run
    ```
 6. From the app's welcome screen, either create a new farmer account via Sign Up, or sign in directly using the test login details below.
-
-> If a live device/emulator cannot be set up before marking, the same workflow is shown end-to-end in the live demonstration on 21 August 2026, and in the presentation's demo section.
 
 ## Test Login Details
 
