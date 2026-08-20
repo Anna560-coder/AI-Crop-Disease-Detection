@@ -1,6 +1,4 @@
-# AI-Driven Mobile Crop Disease Detection System
-
-**for Small-Scale Farmers in Nketoana Local Municipality**
+# Development of an AI-Driven Mobile Crop Disease Detection System for Small-Scale Farmers in Nketoana Local Municipality. 
 
 IPJ527C: Advanced Research Project B — Assignment 1 (Alpha Version Demonstration)
 
