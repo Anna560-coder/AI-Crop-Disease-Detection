@@ -147,14 +147,28 @@ class DetectionHistoryScreen extends StatelessWidget {
 
               return Card(
                 child: ListTile(
-                  leading: item['imagePath'] != null
-                      ? Image.file(
-                          File(item['imagePath']),
-                          width: 60,
-                          height: 60,
-                          fit: BoxFit.cover,
-                        )
-                      : const Icon(Icons.image),
+                  leading: SizedBox(
+                    width: 60,
+                    height: 60,
+                    child:
+                        item['imagePath'] != null &&
+                            File(item['imagePath']).existsSync()
+                        ? ClipRRect(
+                            borderRadius: BorderRadius.circular(6),
+                            child: Image.file(
+                              File(item['imagePath']),
+                              width: 60,
+                              height: 60,
+                              fit: BoxFit.cover,
+                              errorBuilder: (context, error, stackTrace) =>
+                                  const Icon(
+                                    Icons.image_not_supported,
+                                    size: 32,
+                                  ),
+                            ),
+                          )
+                        : const Icon(Icons.image, size: 32),
+                  ),
                   title: Text("Disease: ${item['label']}"),
                   subtitle: Text(
                     "Confidence: ${(item['confidence'] as num).toStringAsFixed(2)}%\n"

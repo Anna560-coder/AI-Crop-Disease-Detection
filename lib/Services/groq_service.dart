@@ -33,7 +33,7 @@ Use simple language.
           "Content-Type": "application/json",
         },
         body: jsonEncode({
-          "model": "llama-3.1-8b-instant",
+          "model": "openai/gpt-oss-20b",
           "messages": [
             {"role": "user", "content": prompt},
           ],
