@@ -43,3 +43,19 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Secrets (API keys injected with --dart-define-from-file=env.json)
+env.json
+
+# Android release signing
+/android/key.properties
+*.jks
+*.keystore
+
+# Model training: downloaded datasets and generated models (copy the final
+# model into assets/ to ship it)
+/tools/model_training/data/
+/tools/model_training/output/
+
+# Kotlin compiler session files
+/android/.kotlin/

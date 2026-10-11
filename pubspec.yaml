@@ -46,6 +46,9 @@ dependencies:
   cloud_firestore: ^6.4.1
   tflite_flutter: ^0.12.1
   image: ^4.8.0
+  path_provider: ^2.1.5
+  shared_preferences: ^2.5.5
+  flutter_markdown_plus: ^1.0.12
 
 dev_dependencies:
   flutter_test:

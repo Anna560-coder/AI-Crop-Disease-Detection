@@ -30,7 +30,7 @@ class AuthServices {
       });
       return null; //success: no error message
     } catch (e) {
-      return e.toString(); //error: return the exception
+      return friendlyError(e); //error: simple message for the farmer
     }
   }
 
@@ -52,14 +52,62 @@ class AuthServices {
           .collection("farmers")
           .doc(userCredential.user!.uid)
           .get();
-      return userDoc['role']; //retutn the user's role (admin/farmer)
+
+      //account exists in auth but has no profile/role in firestore
+      final data = userDoc.data() as Map<String, dynamic>?;
+      final role = data?['role'];
+      if (role is! String) {
+        await _auth.signOut();
+        return "Your account profile was not found. Please contact support.";
+      }
+      return role; //retutn the user's role (admin/farmer)
     } catch (e) {
-      return e.toString(); //error: return the exception message
+      return friendlyError(e); //error: simple message for the farmer
     }
   }
 
+  //send a password reset link to the user's email
+  Future<String?> resetPassword(String email) async {
+    try {
+      await _auth.sendPasswordResetEmail(email: email.trim());
+      return null; //success
+    } catch (e) {
+      return friendlyError(e);
+    }
+  }
+
+  /// Turns Firebase error codes into short, plain-language messages.
+  static String friendlyError(Object e) {
+    if (e is FirebaseAuthException) {
+      switch (e.code) {
+        case 'invalid-credential':
+        case 'wrong-password':
+        case 'user-not-found':
+        case 'INVALID_LOGIN_CREDENTIALS':
+          return "Wrong email or password. Please try again.";
+        case 'invalid-email':
+          return "Please enter a valid email address, e.g. name@gmail.com";
+        case 'email-already-in-use':
+          return "An account with this email already exists. Please log in instead.";
+        case 'weak-password':
+          return "Your password is too short. Use at least 6 characters.";
+        case 'user-disabled':
+          return "This account has been disabled. Please contact support.";
+        case 'too-many-requests':
+          return "Too many attempts. Please wait a few minutes and try again.";
+        case 'network-request-failed':
+          return "No internet connection. Please check your network and try again.";
+      }
+      return e.message ?? "Something went wrong. Please try again.";
+    }
+    if (e is FirebaseException && e.code == 'unavailable') {
+      return "No internet connection. Please check your network and try again.";
+    }
+    return "Something went wrong. Please try again.";
+  }
+
   //for user Logout
-  signOut() async {
-    _auth.signOut();
+  Future<void> signOut() async {
+    await _auth.signOut();
   }
 }

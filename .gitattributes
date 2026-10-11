@@ -1,0 +1,4 @@
+# Keep asset text files with LF endings so labels parse identically everywhere
+assets/*.txt text eol=lf
+*.tflite binary
+*.png binary

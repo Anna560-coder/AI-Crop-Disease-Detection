@@ -1,6 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Required in release builds for Firebase and the Groq AI service. -->
+    <uses-permission android:name="android.permission.INTERNET"/>
     <application
-        android:label="ai_crop_disease_detection"
+        android:label="Crop Disease Detection"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

@@ -1,30 +1,39 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
+import 'dart:io';
 
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:ai_crop_disease_detection/main.dart';
+import 'package:ai_crop_disease_detection/Services/label_utils.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+  test('parseLabels trims CRLF endings and skips blank lines', () {
+    expect(parseLabels('Gall Midge\r\nHealthy\r\n\r\nSooty Mould\r\n'), [
+      'Gall Midge',
+      'Healthy',
+      'Sooty Mould',
+    ]);
+  });
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+  test('assets/labels.txt has 9 clean, unique labels matching the model', () {
+    final labels = parseLabels(File('assets/labels.txt').readAsStringSync());
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
+    // 8 diseases/healthy + "Not a leaf", in the model's output order.
+    expect(labels.length, 9);
+    expect(labels.toSet().length, labels.length);
+    expect(labels, contains('Healthy'));
+    expect(labels.last, notLeafLabel);
+    for (final label in labels) {
+      expect(label, label.trim());
+    }
+  });
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+  test('the model file the app loads is bundled', () {
+    expect(File('assets/crop_disease_model.tflite').existsSync(), isTrue);
+  });
+
+  test('isNotLeafLabel matches only the "Not a leaf" class', () {
+    expect(isNotLeafLabel('Not a leaf'), isTrue);
+    expect(isNotLeafLabel('not a leaf'), isTrue);
+    expect(isNotLeafLabel('Healthy'), isFalse);
+    expect(isNotLeafLabel('Anthracnose'), isFalse);
   });
 }

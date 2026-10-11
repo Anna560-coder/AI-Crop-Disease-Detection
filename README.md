@@ -1,6 +1,6 @@
-# Development of an AI-Driven Mobile Crop Disease Detection System for Small-Scale Farmers in Nketoana Local Municipality. 
+# Development of an AI-Driven Mobile Crop Disease Detection System for Small-Scale Farmers in Nketoana Local Municipality
 
-IPJ527C: Advanced Research Project B — Assignment 1 (Alpha Version Demonstration)
+IPJ527C: Advanced Research Project B — Assessment 3 (Beta Version Demonstration)
 
 **Student:** Anna Mapakiso Mosala | **Student Number:** 220008504 | **Supervisor:** Dr Paulina Phoobane
 
@@ -10,86 +10,87 @@ IPJ527C: Advanced Research Project B — Assignment 1 (Alpha Version Demonstrati
 
 ## Overview
 
-A mobile application that lets small-scale farmers in Nketoana Local Municipality photograph a crop leaf and receive an AI-generated disease diagnosis (label, symptoms, severity and confidence score), along with plain-language, AI-generated treatment advice. Every diagnosis is saved to the farmer's personal detection history for future reference.
+**Crop Doctor** is an Android app that lets small-scale farmers in Nketoana Local Municipality photograph a mango leaf and get an on-device AI diagnosis (disease, severity, symptoms and treatment), plain-language AI advice they can ask follow-up questions about, a history of every scan, and market prices, seasonal tips and disease alerts posted by Agriculture Experts.
 
-This is the **Alpha version**: it demonstrates the core, prioritised end-to-end workflow approved in IPJ517C — account creation, photo-based disease detection, diagnosis, AI advisory recommendations, and detection history — running on a real device/emulator with a live Firebase backend.
+This is the **Beta version**. It completes the core scope approved in IPJ517C and adds the Agriculture Expert role, which was outstanding at the Alpha stage.
+
+## Beta Access for the Lecturer
+
+**Install:** download the APK from the link submitted on eThuto, open it on an Android phone and allow "Install unknown apps" when asked.
+
+| Role | Email | Password |
+|---|---|---|
+| Farmer | lecturer.farmer@cropdoctor.test | CropDemo#2026 |
+| Agriculture Expert | lecturer.expert@cropdoctor.test | CropDemo#2026 |
+
+These are dedicated test accounts. You can also create your own farmer account with **Create a free account**.
+
+**Suggested test:** log in as the expert and post an Alert with a photo; log in as the farmer, see the red badge on Market Updates, then check a leaf (place one leaf on white paper) and ask the AI a follow-up question.
+
+## Core Functions and Status
+
+| Function | Status |
+|---|---|
+| Farmer registration, login, password reset | Implemented |
+| Photo capture (camera) and upload (gallery) | Implemented |
+| On-device disease detection, 8 mango leaf classes | Implemented (98.8% on held-out test leaves) |
+| "Not a leaf" rejection of non-leaf photos | Implemented (beta addition) |
+| Structured diagnosis: severity, symptoms, treatment | Implemented |
+| AI advisory with follow-up questions ("Ask the AI") | Implemented (beta addition) |
+| Detection history with details and delete | Implemented |
+| Agriculture Expert role: post updates with photos, expiry and delete | Implemented (outstanding at Alpha) |
+| Farmer market updates feed with unread badge | Implemented |
+| Role-based security rules | Implemented and deployed |
+| First-launch guide and farmer-friendly interface | Implemented (supervisor feedback) |
+| Weather forecast | Outstanding |
+| Admin tools inside the app | Partially implemented (managed in Firebase console) |
 
 ## Technology Stack
 
 | Layer | Technology |
 |---|---|
-| Frontend | Flutter (cross-platform mobile) |
-| Authentication & Database | Firebase (Authentication, Cloud Firestore) |
-| AI Disease Detection | TensorFlow Lite — MobileNet model, fine-tuned for 3 disease classes |
-| AI Advisory | Groq API (llama-3.1-8b-instant) |
+| Frontend | Flutter (Android first) |
+| Authentication & Database | Firebase Authentication, Cloud Firestore with security rules |
+| Disease detection | TensorFlow Lite, MobileNetV2 transfer learning, 8 leaf classes + "Not a leaf", runs offline on the phone ([method and results](tools/model_training/README.md)) |
+| AI advisory | Groq API, model openai/gpt-oss-20b |
 
-## Functions Implemented (Alpha Version)
+## Scope Changes Since IPJ517C
 
-- User registration and login (Firebase Authentication), including handling of duplicate-email and invalid-credential errors
-- Image capture (camera) and image upload (gallery)
-- AI-based disease detection across 3 classes: Gall Midge, Healthy, Sooty Mould (98–99% confidence in testing)
-- Structured diagnosis (symptoms, severity level, crop type) via a Firestore reference lookup joined to the model's output
-- AI-generated treatment recommendations via the Groq API
-- Detection history, scoped to the logged-in farmer, with delete functionality
-- Farmer requirements survey conducted to inform the design (Google Forms, submitted under IPJ517C)
+- **AI provider:** Groq (openai/gpt-oss-20b) instead of the Gemini API in the proposal; the function (plain-language treatment advice) is the same.
+- **Disease classes:** expanded from 3 classes at Alpha to the 8 MangoLeafBD classes, plus a "Not a leaf" class added after testing showed the model named a disease for any photo.
+- **Expert photos** are stored inside the post (resized to 800 px) rather than in Firebase Storage, to avoid extra storage configuration.
 
-> See the Requirements & Feature Checklist in the Alpha Version Documentation Submitted for the full traceability of each item back to the approved IPJ517C objectives.
+## Run from Source
 
-## How to Run / Access the System
+1. `git clone https://github.com/Anna560-coder/AI-Crop-Disease-Detection.git`
+2. `flutter pub get`
+3. Copy `env.example.json` to `env.json` and add a Groq API key (`env.json` is git-ignored).
+4. Connect an Android emulator or phone and run `flutter run --dart-define-from-file=env.json` (in VS Code, F5 does this).
 
-1. Clone the repository:
-   ```
-   git clone https://github.com/Anna560-coder/AI-Crop-Disease-Detection.git
-   ```
-2. Install Flutter dependencies:
-   ```
-   flutter pub get
-   ```
-3. Ensure `firebase_options.dart` is present and configured for the project's Firebase instance (included in the repository so the marker does not need to create a separate Firebase project).
-4. Connect an Android emulator or a physical Android device.
-5. Run the app:
-   ```
-   flutter run
-   ```
-6. From the app's welcome screen, either create a new farmer account via Sign Up, or sign in directly using the test login details below.
-
-## Test Login Details
-
-| Field | Value |
-|---|---|
-| Email | malucky@gmail.com |
-| Password | Test1234 |
-
-> This account already has sample detection history saved, so you can view the Detection History screen without first running a diagnosis.
-
-## Incomplete Functions / Known Limitations
-
-- **Agriculture Expert role** — not yet implemented. Planned as a second user role, alongside Farmer, able to post market price updates, seasonal advice and alerts for farmers to view. Deferred because it also requires role-based access control beyond the current Alpha scope.
-- **Weather forecast** — not yet implemented. Planned integration with a third-party weather API (e.g. OpenWeatherMap) so farmers can see a local forecast alongside their diagnosis, supporting decisions on spraying, planting and harvest timing.
-- **UI/UX visual polish** — the interface is functional but not yet visually refined. A more polished, consistent, farmer-friendly design is planned before final submission.
-- **Role-based Firestore security rules** — partially implemented. Current rules permit any authenticated user full read/write access. This is functional for the Alpha demo but must be scoped by role and record ownership before the Agriculture Expert role above can be safely introduced.
-- **AI advisory provider** — implemented using the Groq API (llama-3.1-8b-instant) rather than the Gemini API originally specified in the approved IPJ517C proposal. Functionally equivalent; disclosed here as a scope adjustment, not a defect.
-- **Single-turn AI advisory** — "Ask for More Recommendations" currently sends one fixed prompt and returns a single static response. A planned upgrade ("Ask the AI Anything") will let farmers type their own follow-up questions in an open, multi-turn conversation.
-- **API key handling** — the Groq API key is currently referenced directly in source code rather than in secure/server-side storage. Migrating this is a prioritised next step before any production deployment.
-- **Disease class coverage** — currently limited to 3 classes (Gall Midge, Healthy, Sooty Mould). Expanding coverage is a priority for the next development stage.
+Firebase is already configured in `lib/firebase_options.dart`. Security rules are in `firestore.rules` (deploy with `firebase deploy --only firestore:rules`).
 
 ## Testing Summary
 
-7 functional test cases were run against the core workflow (registration, login, image capture, disease detection, diagnosis, AI advisory, detection history) — all passed. 5 defects were found and resolved during development (an expired Firestore test-mode rule, an expired Groq API key, a duplicated function silently blocking history saves, a Firestore data-entry error, and one confirmed non-defect). Full test cases, inputs/outputs and defect records are documented in the Alpha Version Documentation Trio submitted alongside this README.
+- **Beta:** 17 automated unit tests (`flutter test`), 36 security-rule tests on the Firestore emulator, and a model evaluation on held-out images: 98.8% of 489 test leaves classified correctly (original model 90.6%) and 80 of 80 independent non-leaf images rejected (original model 0 of 80).
+- **Alpha:** 7 functional test cases on the core workflow passed; 5 defects found and resolved (documented in the Alpha documentation).
+
+## Known Limitations
+
+- The model was trained on single leaves photographed on a plain background; leaves photographed on the tree are untested, so the app asks farmers to lay the leaf on white paper.
+- Leaves from other crops are not recognised as "not a mango leaf".
+- The Groq API key is kept out of the repository but is embedded in the compiled app; a server-side proxy is planned.
+- AI chat conversations are not saved after the screen is closed.
 
 ## Ethical, Privacy and Security Considerations
 
-- Farmer data (diagnosis records, images) is stored in Cloud Firestore and is currently accessible to any authenticated user under the Alpha version's rules (see Limitations above — role/ownership scoping is a prioritised next step).
-- No personally identifying information beyond account email is collected by the app itself; farmer survey data was collected separately under IPJ517C ethical clearance.
-- API keys and credentials should not remain in source code in a public repository long-term; this is addressed as a prioritised next step.
+- Each farmer can read only their own detection history; only experts can post and only their own posts can be deleted; nobody can change their own role (enforced by `firestore.rules`).
+- Leaf photos from scans stay on the farmer's phone; only the diagnosis is stored online.
+- AI answers carry a note to consult the local agricultural extension officer for serious problems.
 
-## Prioritised Next Steps
+## Next Steps
 
-- Implement the Agriculture Expert role and role-based Firestore security rules together, so market updates can be introduced safely.
-- Integrate weather forecast functionality.
-- Upgrade AI advisory to a multi-turn, farmer-driven chat ("Ask the AI Anything").
-- Refine the UI/UX with a more polished, farmer-accessible visual design.
-- Expand disease classification coverage beyond the current three classes.
-- Migrate API key handling out of source code into secure storage.
-
-
+- Weather forecast for spraying and planting decisions.
+- Sesotho language support.
+- Test and retrain the model with leaves photographed in the field.
+- Move Groq calls behind a server-side function; save AI chats.
+- Admin tools in the app for managing experts and disease information.

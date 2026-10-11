@@ -1,0 +1,84 @@
+rules_version = '2';
+
+// Deploy with: firebase deploy --only firestore:rules
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(uid) {
+      return signedIn() && request.auth.uid == uid;
+    }
+
+    function isAdmin() {
+      return signedIn() &&
+        exists(/databases/$(database)/documents/farmers/$(request.auth.uid)) &&
+        get(/databases/$(database)/documents/farmers/$(request.auth.uid)).data.role == 'Admin';
+    }
+
+    // Role is compared in lower case so "Expert" and "expert" both work.
+    function isExpert() {
+      return signedIn() &&
+        exists(/databases/$(database)/documents/farmers/$(request.auth.uid)) &&
+        get(/databases/$(database)/documents/farmers/$(request.auth.uid)).data.role.lower() == 'expert';
+    }
+
+    // User profiles: farmers/{uid} = { name, email, role }
+    match /farmers/{uid} {
+      allow read: if isOwner(uid) || isAdmin();
+      // Self sign-up can only ever create a Farmer account.
+      allow create: if isOwner(uid) && request.resource.data.role == 'Farmer';
+      // Users may edit their profile but never change their own role.
+      allow update: if (isOwner(uid) && request.resource.data.role == resource.data.role)
+                    || isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    // Reference data used to build a diagnosis. Read-only for the app.
+    match /diseases/{diseaseId} {
+      allow read: if signedIn();
+      allow write: if isAdmin();
+    }
+
+    // Each farmer can only see and manage their own detection history.
+    match /detection_history/{docId} {
+      allow read, delete: if isOwner(resource.data.userId);
+      allow create: if isOwner(request.resource.data.userId);
+      allow update: if isOwner(resource.data.userId)
+                    && request.resource.data.userId == resource.data.userId;
+    }
+
+    // Posts from Agriculture Experts, shown read-only to farmers.
+    match /market_updates/{postId} {
+      allow read: if signedIn();
+      // Only experts can post, only as themselves, and only with the
+      // expected fields, categories and lengths.
+      allow create: if isExpert()
+        && request.resource.data.keys().hasAll(['authorId', 'category', 'title', 'message', 'createdAt', 'expiresAt'])
+        && request.resource.data.keys().hasOnly(['authorId', 'category', 'title', 'message', 'createdAt', 'expiresAt', 'image'])
+        && request.resource.data.authorId == request.auth.uid
+        && request.resource.data.category in ['Market Price Update', 'Seasonal Advice', 'Alert']
+        && request.resource.data.title is string
+        && request.resource.data.title.size() > 0
+        && request.resource.data.title.size() <= 100
+        && request.resource.data.message is string
+        && request.resource.data.message.size() > 0
+        && request.resource.data.message.size() <= 2000
+        && request.resource.data.createdAt == request.time
+        // Shown for at most 100 days; the app hides it after expiresAt.
+        && request.resource.data.expiresAt is timestamp
+        && request.resource.data.expiresAt > request.time
+        && request.resource.data.expiresAt <= request.time + duration.value(100, 'd')
+        // Optional photo, stored as a small base64 JPEG (about 375 KB max).
+        && (!('image' in request.resource.data)
+            || (request.resource.data.image is string
+                && request.resource.data.image.size() <= 500000));
+      // Experts can delete their own posts; admins can delete any post.
+      allow delete: if (isExpert() && resource.data.authorId == request.auth.uid)
+                    || isAdmin();
+      // No update rule, so posts cannot be edited after posting.
+    }
+  }
+}
