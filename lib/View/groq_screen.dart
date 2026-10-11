@@ -164,7 +164,7 @@ class _GroqScreenState extends State<GroqScreen> {
                   if (!_hasDisease)
                     const _AiBubble(
                       text:
-                          "Dumela! I'm your farming assistant. Ask me anything about your crops, pests, diseases, soil, planting or harvest.",
+                          "Good day! I'm your farming assistant. Ask me anything about your crops, pests, diseases, soil, planting or harvest.",
                     ),
 
                   for (final message in visibleMessages)

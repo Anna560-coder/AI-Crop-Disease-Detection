@@ -400,8 +400,7 @@ class _FarmerScreenState extends State<FarmerScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  // "Dumela" is a Sesotho greeting, the main language in Nketoana.
-                  farmerName.isEmpty ? "Dumela!" : "Dumela, $farmerName!",
+                  farmerName.isEmpty ? "Good day!" : "Good day, $farmerName!",
                   style: const TextStyle(
                     color: Colors.white,
                     fontSize: 22,
