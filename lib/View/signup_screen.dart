@@ -86,7 +86,7 @@ class _SignupScreenState extends State<SignupScreen> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            AuthHeader(height: screenHeight * 0.28),
+            AuthHeader(height: screenHeight * 0.32),
             AuthPanel(
               child: Form(
                 key: _formKey,

@@ -52,29 +52,35 @@ class AuthHeader extends StatelessWidget {
               bottom: false,
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(24, 16, 24, 40),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    const AppLogo(size: 68),
-                    const SizedBox(height: 14),
-                    const Text(
-                      AppStrings.appName,
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 28,
-                        fontWeight: FontWeight.w800,
+                // Shrinks the logo and text to fit on small or short screens
+                // instead of overflowing the header.
+                child: FittedBox(
+                  fit: BoxFit.scaleDown,
+                  alignment: Alignment.bottomCenter,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const AppLogo(size: 68),
+                      const SizedBox(height: 14),
+                      const Text(
+                        AppStrings.appName,
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 28,
+                          fontWeight: FontWeight.w800,
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 6),
-                    Text(
-                      AppStrings.tagline,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: Colors.white.withValues(alpha: 0.9),
-                        fontSize: 15,
+                      const SizedBox(height: 6),
+                      Text(
+                        AppStrings.tagline,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: Colors.white.withValues(alpha: 0.9),
+                          fontSize: 15,
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),
