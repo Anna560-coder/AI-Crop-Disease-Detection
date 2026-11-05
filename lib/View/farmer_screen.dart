@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'package:ai_crop_disease_detection/Services/diagnosis_service.dart';
 import 'package:ai_crop_disease_detection/View/detection_history_screen.dart';
@@ -35,6 +36,8 @@ class _FarmerScreenState extends State<FarmerScreen> {
 
     try {
       final savedImagePath = await _persistImage(filePath!);
+      // Offline, Firestore queues this write and this await only completes
+      // once the phone is back online, so nothing may wait on this method.
       await FirebaseFirestore.instance.collection('detection_history').add({
         'userId': user.uid,
         'imagePath': savedImagePath,
@@ -85,6 +88,7 @@ class _FarmerScreenState extends State<FarmerScreen> {
 
     _modelReady = _tfliteInit();
     _loadFarmerName();
+    unawaited(_diagnosisService.cacheForOffline());
   }
 
   /// Reads the farmer's name for the greeting at the top of the screen.
@@ -249,7 +253,8 @@ class _FarmerScreenState extends State<FarmerScreen> {
       treatmentAdvice = diseaseInfo["treatment_advice"];
     });
 
-    await saveDetectionHistory();
+    // Not awaited: the farmer gets the result now, even with no internet.
+    unawaited(saveDetectionHistory());
   }
 
   Future<void> pickImage(ImageSource source) async {
@@ -684,19 +689,23 @@ class _FarmerScreenState extends State<FarmerScreen> {
                       label: const Text("Get more advice from AI"),
                     ),
                   ],
-                  if (savedToHistory) ...[
+                  ...[
                     const SizedBox(height: 12),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Icon(
-                          Icons.cloud_done_outlined,
+                        Icon(
+                          savedToHistory
+                              ? Icons.cloud_done_outlined
+                              : Icons.cloud_upload_outlined,
                           size: 18,
                           color: AppColors.textMuted,
                         ),
                         const SizedBox(width: 6),
                         Text(
-                          "Saved to your past scans",
+                          savedToHistory
+                              ? "Saved to your past scans"
+                              : "Saving to your past scans when online",
                           style: Theme.of(context).textTheme.bodySmall,
                         ),
                       ],

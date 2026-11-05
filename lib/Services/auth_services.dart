@@ -66,6 +66,27 @@ class AuthServices {
     }
   }
 
+  /// Role of the user who is still signed in on this phone, or null. Uses the
+  /// cached profile when offline, so farmers can open the app with no internet.
+  Future<String?> savedSessionRole() async {
+    final user = await _auth.authStateChanges().first;
+    if (user == null) return null;
+    final doc = _firestore.collection("farmers").doc(user.uid);
+    try {
+      final snapshot = await doc
+          .get(const GetOptions(source: Source.server))
+          .timeout(const Duration(seconds: 4));
+      return snapshot.data()?['role'] as String?;
+    } catch (_) {
+      try {
+        final snapshot = await doc.get(const GetOptions(source: Source.cache));
+        return snapshot.data()?['role'] as String?;
+      } catch (_) {
+        return null;
+      }
+    }
+  }
+
   //send a password reset link to the user's email
   Future<String?> resetPassword(String email) async {
     try {

@@ -1,0 +1,250 @@
+{
+ "test_all": {
+  "n": 975,
+  "correct": 969,
+  "accuracy": 99.4,
+  "ci95": [
+   98.7,
+   99.7
+  ],
+  "macro_f1": 99.2,
+  "per_class": {
+   "Bacterial Canker": {
+    "n": 75,
+    "precision": 100.0,
+    "recall": 98.7,
+    "f1": 99.3
+   },
+   "Cutting Weevil": {
+    "n": 75,
+    "precision": 100.0,
+    "recall": 100.0,
+    "f1": 100.0
+   },
+   "Die Back": {
+    "n": 75,
+    "precision": 98.7,
+    "recall": 98.7,
+    "f1": 98.7
+   },
+   "Gall Midge": {
+    "n": 75,
+    "precision": 98.7,
+    "recall": 98.7,
+    "f1": 98.7
+   },
+   "Healthy": {
+    "n": 75,
+    "precision": 100.0,
+    "recall": 97.3,
+    "f1": 98.6
+   },
+   "Powdery Mildew": {
+    "n": 75,
+    "precision": 98.7,
+    "recall": 100.0,
+    "f1": 99.3
+   },
+   "Sooty Mould": {
+    "n": 75,
+    "precision": 100.0,
+    "recall": 98.7,
+    "f1": 99.3
+   },
+   "Anthracnose": {
+    "n": 75,
+    "precision": 97.4,
+    "recall": 100.0,
+    "f1": 98.7
+   },
+   "Not a leaf": {
+    "n": 375,
+    "precision": 99.7,
+    "recall": 100.0,
+    "f1": 99.9
+   }
+  },
+  "errors": [
+   [
+    "Sooty Mould",
+    "Powdery Mildew"
+   ],
+   [
+    "Bacterial Canker",
+    "Anthracnose"
+   ],
+   [
+    "Gall Midge",
+    "Not a leaf"
+   ],
+   [
+    "Die Back",
+    "Anthracnose"
+   ],
+   [
+    "Healthy",
+    "Die Back"
+   ],
+   [
+    "Healthy",
+    "Gall Midge"
+   ]
+  ]
+ },
+ "confidence": {
+  "median_correct": 100.0,
+  "median_wrong": 86.0,
+  "below_60": 2
+ },
+ "near_duplicate_share": {
+  "test_leaves": 600,
+  "without_duplicate": 489
+ },
+ "new_all": {
+  "n": 600,
+  "correct": 594,
+  "accuracy": 99.0,
+  "ci95": [
+   97.8,
+   99.5
+  ],
+  "recall": {
+   "Anthracnose": 100.0,
+   "Bacterial Canker": 98.7,
+   "Cutting Weevil": 100.0,
+   "Die Back": 98.7,
+   "Gall Midge": 98.7,
+   "Healthy": 97.3,
+   "Powdery Mildew": 100.0,
+   "Sooty Mould": 98.7
+  }
+ },
+ "new_clean": {
+  "n": 489,
+  "correct": 483,
+  "accuracy": 98.8,
+  "ci95": [
+   97.3,
+   99.4
+  ],
+  "recall": {
+   "Anthracnose": 100.0,
+   "Bacterial Canker": 98.6,
+   "Cutting Weevil": 100.0,
+   "Die Back": 98.2,
+   "Gall Midge": 98.5,
+   "Healthy": 96.9,
+   "Powdery Mildew": 100.0,
+   "Sooty Mould": 98.6
+  }
+ },
+ "old_all": {
+  "n": 600,
+  "correct": 551,
+  "accuracy": 91.8,
+  "ci95": [
+   89.4,
+   93.8
+  ],
+  "recall": {
+   "Anthracnose": 93.3,
+   "Bacterial Canker": 92.0,
+   "Cutting Weevil": 100.0,
+   "Die Back": 100.0,
+   "Gall Midge": 90.7,
+   "Healthy": 100.0,
+   "Powdery Mildew": 100.0,
+   "Sooty Mould": 58.7
+  }
+ },
+ "old_clean": {
+  "n": 489,
+  "correct": 443,
+  "accuracy": 90.6,
+  "ci95": [
+   87.7,
+   92.9
+  ],
+  "recall": {
+   "Anthracnose": 92.6,
+   "Bacterial Canker": 91.8,
+   "Cutting Weevil": 100.0,
+   "Die Back": 100.0,
+   "Gall Midge": 92.4,
+   "Healthy": 100.0,
+   "Powdery Mildew": 100.0,
+   "Sooty Mould": 58.3
+  }
+ },
+ "robustness": {
+  "Original": {
+   "accuracy": 98.8,
+   "wrongly_not_leaf": 1,
+   "n": 489
+  },
+  "Dark (50% brightness)": {
+   "accuracy": 94.9,
+   "wrongly_not_leaf": 2,
+   "n": 489
+  },
+  "Bright (150% brightness)": {
+   "accuracy": 95.9,
+   "wrongly_not_leaf": 2,
+   "n": 489
+  },
+  "Blurred (Gaussian, radius 3)": {
+   "accuracy": 83.0,
+   "wrongly_not_leaf": 25,
+   "n": 489
+  },
+  "Rotated 30 degrees": {
+   "accuracy": 93.0,
+   "wrongly_not_leaf": 16,
+   "n": 489
+  },
+  "Low resolution (64 px)": {
+   "accuracy": 29.9,
+   "wrongly_not_leaf": 307,
+   "n": 489
+  }
+ },
+ "independent": {
+  "n": 80,
+  "real_images": 40,
+  "new_rejected": 80,
+  "new_rejected_real_images": 40,
+  "old_median_conf": 75.5
+ },
+ "unseen_plants": {
+  "bonsai": {
+   "n": 128,
+   "not_a_leaf": 128,
+   "named_disease": 0
+  },
+  "joshua_tree": {
+   "n": 64,
+   "not_a_leaf": 64,
+   "named_disease": 0
+  },
+  "lotus": {
+   "n": 66,
+   "not_a_leaf": 66,
+   "named_disease": 0
+  },
+  "sunflower": {
+   "n": 85,
+   "not_a_leaf": 85,
+   "named_disease": 0
+  },
+  "water_lilly": {
+   "n": 37,
+   "not_a_leaf": 36,
+   "named_disease": 1
+  },
+  "strawberry": {
+   "n": 35,
+   "not_a_leaf": 35,
+   "named_disease": 0
+  }
+ }
+}

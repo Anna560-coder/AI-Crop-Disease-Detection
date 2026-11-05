@@ -5,12 +5,34 @@ class DiagnosisService {
     'diseases',
   );
 
+  /// Downloads all disease info while online, so Firestore's local cache can
+  /// answer lookups later when the farmer has no internet.
+  Future<void> cacheForOffline() async {
+    try {
+      await diseasesRef.get().timeout(const Duration(seconds: 10));
+    } catch (_) {
+      // Offline now: whatever was cached earlier is still used.
+    }
+  }
+
+  /// Fresh copy if the server answers quickly, otherwise the cached copy.
+  Future<DocumentSnapshot> _readDisease(String label) async {
+    final doc = diseasesRef.doc(label);
+    try {
+      return await doc
+          .get(const GetOptions(source: Source.server))
+          .timeout(const Duration(seconds: 4));
+    } catch (_) {
+      return doc.get(const GetOptions(source: Source.cache));
+    }
+  }
+
   /// Looks up structured disease info from Firestore.
   /// Falls back to safe defaults so the app never breaks even if a
   /// label has no matching document yet.
   Future<Map<String, dynamic>> getDiseaseInfo(String label) async {
     try {
-      final doc = await diseasesRef.doc(label).get();
+      final doc = await _readDisease(label);
 
       if (doc.exists) {
         final data = doc.data() as Map<String, dynamic>;
